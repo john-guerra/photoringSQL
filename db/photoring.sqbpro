@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/aguerra/workspace/photoRingSqlite/db/photoring.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="3653"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,14:mainphotoDimension"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="photoDimension" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="91"/><column index="2" value="62"/><column index="3" value="300"/><column index="4" value="300"/><column index="5" value="300"/><column index="6" value="78"/><column index="7" value="47"/><column index="8" value="46"/><column index="9" value="300"/><column index="10" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="photoDimensionAllTags" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="91"/><column index="2" value="62"/><column index="3" value="300"/><column index="4" value="300"/><column index="5" value="300"/><column index="6" value="78"/><column index="7" value="47"/><column index="8" value="46"/><column index="9" value="300"/><column index="10" value="300"/><column index="11" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="photos" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="62"/><column index="2" value="46"/><column index="3" value="47"/><column index="4" value="42"/><column index="5" value="78"/><column index="6" value="113"/><column index="7" value="83"/><column index="8" value="76"/><column index="9" value="82"/><column index="10" value="84"/><column index="11" value="59"/><column index="12" value="98"/><column index="13" value="79"/><column index="14" value="76"/><column index="15" value="150"/><column index="16" value="47"/><column index="17" value="53"/><column index="18" value="88"/><column index="19" value="43"/><column index="20" value="45"/><column index="21" value="43"/><column index="22" value="69"/><column index="23" value="125"/><column index="24" value="112"/><column index="25" value="59"/><column index="26" value="300"/><column index="27" value="300"/><column index="28" value="300"/><column index="29" value="300"/><column index="30" value="300"/><column index="31" value="165"/><column index="32" value="170"/><column index="33" value="158"/><column index="34" value="158"/><column index="35" value="298"/><column index="36" value="300"/><column index="37" value="300"/><column index="38" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="photosAllTags" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="62"/><column index="2" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">-- SELECT * FROM photoDimension;
+-- select * from photoDimensionAllTags;
+-- SELECT * from photoDimensionAllTags
+
+
+drop table if exists photoDimension;
+CREATE TABLE &quot;photoDimension&quot; (
+  &quot;dimension_id&quot;  INTEGER NOT NULL,
+  &quot;photo_id&quot;  INTEGER NOT NULL,
+  &quot;dimension_name&quot;  TEXT NOT NULL,
+  &quot;dimension_value&quot; TEXT NOT NULL,
+  &quot;name&quot;  TEXT DEFAULT null,
+  &quot;description&quot; TEXT DEFAULT null,
+--   these are used for flickr photos
+  &quot;server&quot;  TEXT DEFAULT null,
+  &quot;secret&quot;  TEXT DEFAULT null,
+  &quot;URL&quot; TEXT DEFAULT null,
+  &quot;ThumbnailURL&quot;  TEXT,
+  PRIMARY KEY(&quot;dimension_id&quot; AUTOINCREMENT)
+);
+CREATE INDEX &quot;photoDimension_dim_name_and_value&quot; ON &quot;photoDimension&quot; (
+  &quot;dimension_name&quot;,
+  &quot;dimension_value&quot;
+);
+CREATE INDEX &quot;photoDimension_photo_id&quot; ON &quot;photoDimension&quot; (
+  &quot;photo_id&quot;
+);
+CREATE INDEX &quot;photoDimension_photo_id_dim_name&quot; ON &quot;photoDimension&quot; (
+  &quot;photo_id&quot;,
+  &quot;dimension_name&quot;
+);
+
+
+
+-- INSERT INTO photoDimension
+-- (photo_id, dimension_name, dimension_value, name, description, server, secret, URL, ThumbnailURL)
+-- SELECT
+-- photo_id, 'Title' as dimension_name, Title as dimension_value,
+-- photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+--  from photos
+--  where Title!=&quot;&quot; order by dimension_value;
+ 
+ -- Artist
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, 
+name, description, server, secret, 
+URL, ThumbnailURL)
+select
+photo_id, 'Artist' as dimension_name, Artist as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, 
+photos.URL, photos.ThumbnailURL
+ from photos
+ where Artist!=&quot;&quot; order by dimension_value;
+
+ -- Nationality
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'Nationality' as dimension_name, Nationality as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where Nationality!=&quot;&quot; order by dimension_value;
+
+ -- Gender
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'Gender' as dimension_name, Gender as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where Gender!=&quot;&quot; order by dimension_value;
+
+ -- Classification
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'Classification' as dimension_name, Classification as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where Classification!=&quot;&quot; order by dimension_value;
+
+ -- Department
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'Department' as dimension_name, Department as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where Department!=&quot;&quot; order by dimension_value;
+
+
+ -- DateAcquired
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'DateAcquired' as dimension_name, DateAcquired as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where DateAcquired!=&quot;&quot; order by dimension_value;
+
+
+ -- Cataloged
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'Cataloged' as dimension_name, Cataloged as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where Cataloged!=&quot;&quot; order by dimension_value;
+
+ -- URL
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'URL' as dimension_name, URL as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where URL!=&quot;&quot; order by dimension_value;
+
+ -- ThumbnailURL
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'ThumbnailURL' as dimension_name, ThumbnailURL as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where ThumbnailURL!=&quot;&quot; order by dimension_value;
+
+ -- Durationsec
+INSERT INTO photoDimension
+(photo_id, dimension_name, dimension_value, name, description, server, secret,URL, ThumbnailURL)
+select
+photo_id, 'Durationsec' as dimension_name, Durationsec as dimension_value,
+photos.Title, photos.description, photos.server, photos.secret, photos.URL, photos.ThumbnailURL
+ from photos
+ where Durationsec!=&quot;&quot; order by dimension_value;
+ 
+ 
+ -- dimension counts
+drop table if exists dimensionValueCounts;
+create table dimensionValueCounts as
+select dimension_name, dimension_value, count(*)  as count,
+min(dimension_id) as min_dimension_id from photoDimension
+group by dimension_name,dimension_value;
+CREATE INDEX dimensionValueCounts_dimension_name ON dimensionValueCounts (dimension_name);
+
+-- all tags
+-- set session group_concat_max_len = 4096; -- it could be 3076 = max 3072 comming from dimension name and dim value, and 4 from the colon
+drop table if exists photosAllTags;
+CREATE TABLE photosAllTags AS
+SELECT photo_id,
+GROUP_CONCAT(dimension_name || &quot;:&quot; || dimension_value) AS all_tags -- I think there is going to be problems with this colon. Maybe another symbol that does not appear in the moma dataset?
+FROM photoDimension
+GROUP BY 1;
+CREATE INDEX photosAllTags_photo_id  ON photosAllTags (photo_id);
+
+DROP TABLE IF EXISTS photoDimensionAllTags;
+CREATE TABLE photoDimensionAllTags AS
+SELECT * from photoDimension NATURAL JOIN photosAllTags
+ORDER BY dimension_id;
+CREATE INDEX photoDimensionAllTags_photo_id  ON photoDimensionAllTags (photo_id);
+CREATE INDEX photoDimensionAllTags_dimension_id  ON photoDimensionAllTags (dimension_id);
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
